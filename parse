@@ -1,0 +1,26 @@
+#!/bin/bash
+
+echo -e "请输入待解析的日志文件全路径：\c"
+read logfile
+echo -e "请输入目标文件名：\c"
+read outfile
+
+myCount=0
+grep -r '@cee: ' $logfile | while true; do
+    read line
+
+    if [ -z "$line" ]; then
+        echo -e "\nDone: $myCount rows."
+        break
+    fi
+
+    echo -e ".\c"
+
+    echo $line >> "$outfile.raw"
+
+    jsonString=${line#*@cee: }
+    dateString=${line:0:15}
+    echo "$dateString $jsonString" >> "$outfile.json"
+
+    ((myCount+=1))
+done
